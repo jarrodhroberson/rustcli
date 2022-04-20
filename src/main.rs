@@ -21,7 +21,7 @@ struct Directory {
 struct File {
     name: String,
     size: u64,
-    permissions: String,
+    permissions: u16,
     last_modified: String,
 }
 
@@ -49,11 +49,11 @@ fn process_directory(current_dir: PathBuf) -> Result<Directory, Box<dyn Error>> 
         let metadata = fs::metadata(&path)?;
         if metadata.is_file() {
             let lmt = FileTime::from_last_modification_time(&metadata);
-            let mode = format!("{}", &format!("{:o}", metadata.permissions().mode())[3..]);
+            let mode = (&format!("{:o}", metadata.permissions().mode())[3..]).to_string();
             let file = File {
                 name: entry.file_name().into_string().unwrap(),
                 size: metadata.size(),
-                permissions: mode,
+                permissions: mode.parse::<u16>().unwrap(),
                 last_modified: Utc.timestamp(lmt.seconds(), lmt.nanoseconds()).to_rfc3339_opts(SecondsFormat::Micros, true),
             };
             root.contents.push(file);
