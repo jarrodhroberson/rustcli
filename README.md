@@ -9,6 +9,7 @@ There are some more advanced things I had to research in here that might be help
 
 1. Converting a u32 representation of unix permissions to the more familiar 3 digit octal representation.
 
-2. Converting the unix timestamp u64 into an RFC3339 represenation so it is human readable.
+2. Converting the unix timestamp u64 into an [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339) represenation so
+   it is human readable.
 
 3. Retrieving command line arguments with [Command Line Argument Parser for Rust](https://github.com/clap-rs/clap)
