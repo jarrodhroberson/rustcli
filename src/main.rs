@@ -9,6 +9,12 @@ use filetime::FileTime;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
+struct Directory {
+    name: String,
+    contents: Vec<File>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 struct File {
     name: String,
     size: u64,
@@ -18,7 +24,10 @@ struct File {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let current_dir = env::current_dir()?;
-
+    let mut root = Directory {
+        name: current_dir.file_name().unwrap().to_os_string().into_string().unwrap(),
+        contents: Vec::new(),
+    };
     for entry in fs::read_dir(current_dir)? {
         let entry = entry?;
         let path = entry.path();
@@ -32,10 +41,10 @@ fn main() -> Result<(), Box<dyn Error>> {
                 permissions: mode,
                 last_modified: Utc.timestamp(lmt.seconds(), lmt.nanoseconds()).to_rfc3339_opts(SecondsFormat::Micros, true),
             };
-            println!("{}", serde_json::to_string_pretty(&file)?);
+            root.contents.push(file);
         }
     }
-
+    println!("{}", serde_json::to_string_pretty(&root)?);
     Ok(())
 }
 
