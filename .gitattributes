@@ -1,2 +1,10 @@
-* text=lf
-*.rs text
+# all text files should only have eol=lf
+*       text=lf
+# individual files
+*.rs    text
+*.json  text
+*.xml   text
+*.txt   text
+*.toml  text
+*.yml   text
+*.md    text
