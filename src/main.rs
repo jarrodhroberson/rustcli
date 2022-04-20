@@ -1,7 +1,6 @@
 use std::fs;
 use std::env::current_dir;
 use std::error::Error;
-use std::fmt::Display;
 use std::os::unix::fs::MetadataExt;
 use std::os::unix::fs::PermissionsExt;
 use std::path::PathBuf;
