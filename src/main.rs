@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 struct File {
     name: String,
     size: u64,
-    permissions: u32,
+    permissions: String,
     last_modified: String,
 }
 
@@ -25,10 +25,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         let metadata = fs::metadata(&path)?;
         if metadata.is_file() {
             let lmt = FileTime::from_last_modification_time(&metadata);
+            let mode = format!("{}", &format!("{:o}", metadata.permissions().mode())[3..]);
             let file = File {
                 name: entry.file_name().into_string().unwrap(),
                 size: metadata.size(),
-                permissions: metadata.permissions().mode(),
+                permissions: mode,
                 last_modified: Utc.timestamp(lmt.seconds(), lmt.nanoseconds()).to_rfc3339_opts(SecondsFormat::Micros, true),
             };
             println!("{}", serde_json::to_string_pretty(&file)?);
