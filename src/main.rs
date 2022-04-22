@@ -28,11 +28,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn process_directory(current_dir: PathBuf) -> Result<Directory, Box<dyn Error>> {
-    let mut root = Directory {
-        name: current_dir.file_name().unwrap().to_os_string().into_string().unwrap(),
-        contents: Vec::new(),
-    };
-    for entry in fs::read_dir(current_dir)? {
+    let mut contents = Vec::new();
+    for entry in fs::read_dir(&current_dir)? {
         let entry = entry?;
         let path = entry.path();
         let metadata = fs::metadata(&path)?;
@@ -45,9 +42,13 @@ fn process_directory(current_dir: PathBuf) -> Result<Directory, Box<dyn Error>> 
                 permissions: mode.parse::<u16>().unwrap(),
                 last_modified: Utc.timestamp(lmt.seconds(), lmt.nanoseconds()).to_rfc3339_opts(SecondsFormat::Micros, true),
             };
-            root.contents.push(file);
+            contents.push(file);
         }
     }
+    let root = Directory {
+        name: current_dir.file_name().unwrap().to_os_string().into_string().unwrap(),
+        contents: contents,
+    };
     Ok(root)
 }
 
