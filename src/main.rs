@@ -1,5 +1,7 @@
+mod types;
+
 use std::fs;
-use std::env::current_dir;
+use std::env::{current_dir};
 use std::error::Error;
 use std::os::unix::fs::MetadataExt;
 use std::os::unix::fs::PermissionsExt;
@@ -9,30 +11,8 @@ use chrono::prelude::{TimeZone, Utc};
 use chrono::SecondsFormat;
 use clap::Parser;
 use filetime::FileTime;
-use serde::{Deserialize, Serialize, Serializer};
 
-#[derive(Debug, Serialize, Deserialize)]
-struct Directory {
-    name: String,
-    contents: Vec<File>,
-}
-
-fn as_string<S,N: ToString>(n: N, s: S) -> Result<S::Ok, S::Error>
-                where
-                    S: Serializer,
-{
-    s.serialize_str(&*n.to_string())
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct File {
-    name: String,
-    #[serde(serialize_with = "as_string")]
-    size: u64,
-    #[serde(serialize_with = "as_string")]
-    permissions: u16,
-    last_modified: String,
-}
+use crate::types::{Directory,File};
 
 #[derive(Parser)]
 struct Args {
